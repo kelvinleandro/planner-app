@@ -79,7 +79,7 @@ export default function Index() {
         </Button>
       </View>
 
-      <Text className="tet-zinc-500 font-regular text-center text-base">
+      <Text className="text-zinc-500 font-regular text-center text-base">
         Ao planejar sua viagem pela plann.er você automaticamente concorda com
         nossos{" "}
         <Text className="text-zinc-300 underline">
