@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/input";
 import { colors } from "@/styles/colors";
 import { Button } from "@/components/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "@/components/modal";
 import { Calendar } from "@/components/calendar";
 import { calendarUtils, DatesSelected } from "@/utils/calendarUtils";
@@ -21,6 +21,7 @@ import { validateInput } from "@/utils/validateInput";
 import { tripStorage } from "@/storage/trip";
 import { router } from "expo-router";
 import { tripServer } from "@/server/trip-server";
+import { Loading } from "@/components/loading";
 
 enum StepForm {
   TRIP_DETAILS = 1,
@@ -35,6 +36,7 @@ enum MODAL {
 
 export default function Index() {
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
+  const [isGettingTrip, setIsGettingTrip] = useState(true);
   const [stepForm, setStepForm] = useState(StepForm.TRIP_DETAILS);
   const [selectedDates, setSelectedDates] = useState({} as DatesSelected);
   const [destination, setDestination] = useState("");
@@ -54,7 +56,7 @@ export default function Index() {
       );
     }
 
-    if (destination.trim().length < 4) {
+    if (destination.trim.length < 4) {
       return Alert.alert(
         "Detalhes da viagem",
         "Destino deve ter pelo menos 4 caracteres"
@@ -95,6 +97,7 @@ export default function Index() {
     const emailAlreadyExists = emailsToInvite.find(
       (email) => email === emailToInvite
     );
+
     if (emailAlreadyExists) {
       return Alert.alert("Convidado", "E-mail já foi adicionado");
     }
@@ -119,6 +122,7 @@ export default function Index() {
   async function createTrip() {
     try {
       setIsCreatingTrip(true);
+
       const newTrip = await tripServer.create({
         destination,
         starts_at: dayjs(selectedDates.startsAt?.dateString).toString(),
@@ -133,6 +137,33 @@ export default function Index() {
       console.log(error);
       setIsCreatingTrip(false);
     }
+  }
+
+  async function getTrip() {
+    try {
+      const tripId = await tripStorage.get();
+
+      if (!tripId) {
+        return setIsGettingTrip(false);
+      }
+
+      const trip = await tripServer.getById(tripId);
+
+      if (trip) {
+        return router.navigate(`trip/${trip.id}`);
+      }
+    } catch (error) {
+      setIsGettingTrip(false);
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getTrip();
+  }, []);
+
+  if (isGettingTrip) {
+    return <Loading />;
   }
 
   return (
@@ -193,10 +224,10 @@ export default function Index() {
                 autoCorrect={false}
                 value={
                   emailsToInvite.length > 0
-                    ? `${emailsToInvite.length} pessoa(s) convidada(s)`
+                    ? `${emailsToInvite.length} pessoas(a) convidada(s)`
                     : ""
                 }
-                onPressIn={() => {
+                onPress={() => {
                   Keyboard.dismiss();
                   setShowModal(MODAL.GUESTS);
                 }}

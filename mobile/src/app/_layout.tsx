@@ -1,5 +1,6 @@
 import "@/styles/global.css";
-import "@/utils/dayjsLocaleConfig"
+import "@/utils/dayjsLocaleConfig";
+
 import { View, StatusBar } from "react-native";
 import { Slot } from "expo-router";
 
@@ -13,10 +14,14 @@ import {
 import { Loading } from "@/components/loading";
 
 export default function Layout() {
-  const [fontsLoaded] = useFonts({ Inter_500Medium, Inter_400Regular, Inter_600SemiBold });
+  const [fontsLoaded] = useFonts({
+    Inter_500Medium,
+    Inter_400Regular,
+    Inter_600SemiBold,
+  });
 
-  if(!fontsLoaded) {
-    return <Loading />
+  if (!fontsLoaded) {
+    return <Loading />;
   }
 
   return (

@@ -28,7 +28,7 @@ async function create({
   emails_to_invite,
 }: TripCreate) {
   try {
-    const { data } = await api.post<{tripId: string}>("/trips", {
+    const { data } = await api.post<{ tripId: string }>("/trips", {
       destination,
       starts_at,
       ends_at,
@@ -37,10 +37,27 @@ async function create({
       owner_email: "test@example.com",
     });
 
-    return data
+    return data;
   } catch (error) {
     throw error;
   }
 }
 
-export const tripServer = { getById, create };
+async function update({
+  id,
+  destination,
+  starts_at,
+  ends_at,
+}: Omit<TripDetails, "is_confirmed">) {
+  try {
+    await api.put(`/trips/${id}`, {
+      destination,
+      starts_at,
+      ends_at,
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const tripServer = { getById, create, update };
