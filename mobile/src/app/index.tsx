@@ -56,7 +56,7 @@ export default function Index() {
       );
     }
 
-    if (destination.trim.length < 4) {
+    if (destination.trim().length < 4) {
       return Alert.alert(
         "Detalhes da viagem",
         "Destino deve ter pelo menos 4 caracteres"
@@ -64,7 +64,7 @@ export default function Index() {
     }
 
     if (stepForm === StepForm.TRIP_DETAILS) {
-      setStepForm(StepForm.ADD_EMAIL);
+      return setStepForm(StepForm.ADD_EMAIL);
     }
 
     Alert.alert("Nova viagem", "Confirmar viagem?", [
